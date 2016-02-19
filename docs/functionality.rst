@@ -40,7 +40,7 @@ The following table shows the combination of plugin messages and icons as a func
 Typical workflow
 ================
 
-The following sections present how the |plugin| is used in |qg|.  Another section will detail what the plugin does in the database.
+The following sections present how the |plugin| is used in |qg|.  Another section will detail what the plugin does in the working schema database.
 
 Unversioned database
 ++++++++++++++++++++
@@ -50,11 +50,11 @@ The sequence of operations begins with data in a PostGIS (PG) database that is l
 .. note::
    The |plugin| operates on QGIS layer groups, not on individual layers.
 
-At that stage the data is unversioned and the only option on the layer group, except for help, is to "historize" the database.
+At that stage the data is unversioned and the only option on the layer group, except for help, is to "historize" the database in working schema.
 
 |unversioned_menu_png|
 
-Clicking on the historize button (|historize_png|) will generate a warning from the plugin that four new columns will be added to all tables in the selected database.
+Clicking on the historize button (|historize_png|) will generate a warning from the plugin that four new columns will be added to all tables in the working schema of the selected database.
 
 |historize_warning_png|
 
@@ -69,10 +69,10 @@ The plugin menu for a versioned layer group shows 5 icons.
 
 |versioned_menu_png|
 
-On the left, the name of the database schema is shown.  More specifically, the space-separated text items on the left identify four components :
+On the left, the name of the database working schema is shown.  More specifically, the space-separated text items on the left identify four components :
 
 - name of database
-- name of schema
+- name of working schema
 - name of branch (initial branch has default name *trunk*)
 - revision number
 
@@ -85,7 +85,7 @@ Three operations can be performed on a versioned layer group :
 Branching
 *********
 
-Branching involves the creation of a new schema in the database.  The new schema becomes another line of versioning of the original schema.
+Branching involves the creation of a new schema in the database.  The new schema becomes another line of versioning of the original working schema.
 
 .. note::
    Even though branches are to hold independent versioining histories, they still result in a "commit" in the *revisions* table.
