@@ -407,7 +407,8 @@ class Versioning:
         use_branches_setting = QSettings().value('qgis-versioning/use-branches', True)
         print "qgis-versioning/use-branches set to " + str(use_branches_setting)
 
-        if str(use_branches_setting) not in ['False', 'false']:
+        # 'or' below accounts for empty string;  if empty, use default
+        if str(use_branches_setting) not in ['False', 'false'] or use_branches_setting:
             print "Enabling the branch button"
             self.actions.append( QAction(
                 QIcon(os.path.dirname(__file__) + "/branch.svg"),
