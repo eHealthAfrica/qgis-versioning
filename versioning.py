@@ -38,6 +38,7 @@ import psycopg2
 from PyQt4 import uic
 import versioning_base
 import platform, sys
+import urlparse
 
 # Deactivate stdout (like output of print statements) because windows
 # causes occasional "IOError [Errno 9] File descriptor error"
@@ -401,19 +402,46 @@ class Versioning:
         self.actions[-1].triggered.connect(self.view)
         self.actions[-1].setVisible(False)
 
-        self.actions.append( QAction(
-            QIcon(os.path.dirname(__file__) + "/branch.svg"),
-            u"branch", self.iface.mainWindow()) )
-        self.actions[-1].setWhatsThis("create branch")
-        self.actions[-1].triggered.connect(self.branch)
-        self.actions[-1].setVisible(False)
+        # get the value of the 'use-branches' setting
+        # if setting is not defined, take the default value : True
+        use_branches_setting = QSettings().value('qgis-versioning/use-branches', True)
+        print "qgis-versioning/use-branches set to " + str(use_branches_setting)
+
+        if str(use_branches_setting) not in ['False', 'false']:
+            print "Enabling the branch button"
+            self.actions.append( QAction(
+                QIcon(os.path.dirname(__file__) + "/branch.svg"),
+                u"branch", self.iface.mainWindow()) )
+            self.actions[-1].setWhatsThis("create branch")
+            self.actions[-1].triggered.connect(self.branch)
+            self.actions[-1].setVisible(False)
+        else:
+            print "Disabling the branch button"
+
+        # get the value of the 'help-url' setting
+        # if value : check if value is a valid url
+        #     if True: use that url
+        # else use default plugin ReadTheDocs site
+        help_url_setting = QSettings().value('qgis-versioning/help-url',
+            'http://qgis-versioning.readthedocs.org/en/latest/')
+        if help_url_setting:
+            parts = urlparse.urlsplit(help_url_setting)
+            print "parts.scheme = " + parts.scheme
+
+        print "qgis-versioning/help-url set to " + str(help_url_setting)
 
         self.actions.append( QAction(
             QIcon(os.path.dirname(__file__) + "/help.svg"),
             u"help", self.iface.mainWindow()) )
         self.actions[-1].setWhatsThis("versioning-help")
-        self.actions[-1].setToolTip ("versioning help")
-        url = "http://qgis-versioning.readthedocs.org/en/latest/"
+        if not help_url_setting or \
+            (not parts.scheme in ['http', 'https'] or not parts.netloc):
+            print "Not a url; using default value"
+            url = "http://qgis-versioning.readthedocs.org/en/latest/"
+        else:
+            print "Valid url"
+            url = help_url_setting
+        self.actions[-1].setToolTip ("versioning help at " + url)
         self.actions[-1].triggered.connect(lambda:QDesktopServices.openUrl(QUrl(url)))
         self.actions[-1].setVisible(True)
 
