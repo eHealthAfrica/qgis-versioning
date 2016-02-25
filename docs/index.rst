@@ -28,4 +28,7 @@ This is the temporary location of the |plugin|_ documentation.  Click this link 
    requirements
    functionality
    spatialfiltering
+   problem-handling
+   customization
+   inner-workings
    contributors
